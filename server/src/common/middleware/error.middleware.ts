@@ -4,7 +4,7 @@ export const globalErrorHandler = (
   err: any,
   _req: Request,
   res: Response,
-  _next: NextFunction
+  _next: NextFunction,
 ) => {
   const statusMap: Record<string, number> = {
     VALIDATION_ERROR: 400,
@@ -14,12 +14,13 @@ export const globalErrorHandler = (
 
   const status = statusMap[err.code] || 500;
 
-  return res.status(status).json(
-    errorResponse(
-      err.code || "INTERNAL_SERVER_ERROR",
-      err.message || "Something went wrong",
-      err.field || null
-    )
-  );
+  return res
+    .status(status)
+    .json(
+      errorResponse(
+        err.code || "INTERNAL_SERVER_ERROR",
+        err.message || "Something went wrong",
+        err.field || null,
+      ),
+    );
 };
-
