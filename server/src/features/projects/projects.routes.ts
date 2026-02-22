@@ -6,8 +6,9 @@ import { auth } from "../../common/middleware/auth.middleware";
 
 import { CreateProjectSchema } from "./dto/create-project.dto";
 import { CreateTaskSchema } from "./dto/create-task.dto";
-import { UpdateTaskParamsSchema } from "./dto/update-task-status.dto";
+
 import { GetProjectsParamsSchema } from "./dto/get-projects.dto";
+import { UpdateTaskParamsSchema } from "./dto/update-task-status.dto";
 
 const router = Router();
 const controller = new ProjectsController();

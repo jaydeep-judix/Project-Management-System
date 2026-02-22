@@ -11,7 +11,15 @@ export class UsersController {
   };
 
   login = async (req: Request, res: Response) => {
-    const result = await this.service.login(req.body);
-    return res.status(200).json(successResponse(result));
+    const { user, token } = await this.service.login(req.body);
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 3600000, 
+      sameSite: "lax",
+    });
+
+    return res.status(200).json(successResponse({ user }));
   };
 }
