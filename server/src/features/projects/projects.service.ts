@@ -22,11 +22,11 @@ export class ProjectsService {
       };
     }
 
-    project.tasks.push({ title, completed: false } as any);
+    project.tasks.push({ title, status: "pending" } as any);
     return this.repo.save(project);
   }
 
-  async markTaskDone(projectId: string, taskId: string) {
+  async updateTaskStatus(projectId: string, taskId: string, status: string) {
     const project = await this.repo.findById(projectId);
 
     if (!project) {
@@ -47,7 +47,7 @@ export class ProjectsService {
       };
     }
 
-    task.completed = true;
+    task.status = status as any;
     return this.repo.save(project);
   }
 

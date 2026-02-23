@@ -9,6 +9,7 @@ import { CreateTaskSchema } from "./dto/create-task.dto";
 
 import { GetProjectsParamsSchema } from "./dto/get-projects.dto";
 import { UpdateTaskParamsSchema } from "./dto/update-task-status.dto";
+import { TaskParamsSchema } from "./dto/task-params.dto";
 
 const router = Router();
 const controller = new ProjectsController();
@@ -31,13 +32,14 @@ router.post(
 
 router.patch(
   "/:projectId/tasks/:taskId",
-  validate(UpdateTaskParamsSchema, "params"),
-  controller.markTaskDone,
+  validate(TaskParamsSchema, "params"),
+  validate(UpdateTaskParamsSchema),
+  controller.updateTaskStatus,
 );
 
 router.delete(
   "/:projectId/tasks/:taskId",
-  validate(UpdateTaskParamsSchema, "params"),
+  validate(TaskParamsSchema, "params"),
   controller.deleteTask,
 );
 

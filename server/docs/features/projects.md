@@ -21,15 +21,16 @@ This feature allows users to organize their work by creating projects and managi
   - **Validation**: Requires a non-empty task title.
 
 - **PATCH `/projects/:projectId/tasks/:taskId`**
-  - **Details**: Marks a specific task as completed.
-  - **Validation**: Both project and task IDs must be valid.
+  - **Payload**: `status`
+  - **Details**: Updates the status of a specific task.
+  - **Validation**: Both project and task IDs must be valid. Status must be one of the allowed enums (e.g., pending, in-progress, done).
 
 - **DELETE `/projects/:projectId/tasks/:taskId`**
   - **Details**: Removes a task from a project permanentely.
 
 ### Business Rules
 
-- **Access Control**: You must be logged in to access any project-related endpoints. Every request requires a valid JWT token in the `Authorization` header.
+- **Access Control**: You must be logged in to access any project-related endpoints. Every request requires a valid JWT token in the `token` cookie.
 - **Ownership**: Projects are strictly tied to the `userId` provided during creation.
-- **Task Management**: Tasks are sub-documents of a project. They have a simple lifecycle (created as pending, can be marked as completed).
+- **Task Management**: Tasks are sub-documents of a project. They have a lifecycle tracked by their `status` field (pending, in-progress, done).
 - **Safe Deletion**: Deleting a task is permanent and cannot be undone via the API.

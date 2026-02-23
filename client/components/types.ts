@@ -12,3 +12,19 @@ export type RegisterDto = {
   email: string;
   password: string;
 };
+
+export type DashboardStats = {
+  completed: number;
+  inProgress: number;
+  pending: number;
+  totalTasks: number;
+  doneTasks: number;
+  inProgressTasks: number;
+  pendingTasks: number;
+  recentProjects: {
+    id: string;
+    name: string;
+    status: string;
+    createdAt: string;
+  }[];
+};

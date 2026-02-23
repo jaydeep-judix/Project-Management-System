@@ -1,4 +1,5 @@
 import { ProjectModel } from "./projects.model";
+import mongoose from "mongoose";
 
 export class ProjectsRepository {
   async create(data: any) {
@@ -6,7 +7,7 @@ export class ProjectsRepository {
   }
 
   async findByUser(userId: string) {
-    return ProjectModel.find({ userId });
+    return ProjectModel.find({ userId: new mongoose.Types.ObjectId(userId) });
   }
 
   async findById(id: string) {

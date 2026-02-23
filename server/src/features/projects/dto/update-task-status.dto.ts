@@ -1,8 +1,12 @@
 import { z } from "zod";
 
-export const UpdateTaskParamsSchema = z.object({
-  projectId: z.string().min(1, "Project ID is required"),
-  taskId: z.string().min(1, "Task ID is required"),
+// Validates only the body: { status }
+export const UpdateTaskBodySchema = z.object({
+  status: z.enum(["pending", "in-progress", "done"]),
 });
 
-export type UpdateTaskParamsDto = z.infer<typeof UpdateTaskParamsSchema>;
+export type UpdateTaskBodyDto = z.infer<typeof UpdateTaskBodySchema>;
+
+// Keep old name as alias for backward compat
+export const UpdateTaskParamsSchema = UpdateTaskBodySchema;
+export type UpdateTaskParamsDto = UpdateTaskBodyDto;

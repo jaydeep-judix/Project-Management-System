@@ -3,7 +3,7 @@ import mongoose, { Schema, Document } from "mongoose";
 interface ITask {
   _id?: mongoose.Types.ObjectId;
   title: string;
-  completed: boolean;
+  status: "pending" | "in-progress" | "done";
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -11,6 +11,7 @@ interface ITask {
 export interface IProject extends Document {
   name: string;
   userId: mongoose.Types.ObjectId;
+  status: "pending" | "in-progress" | "done";
   tasks: mongoose.Types.DocumentArray<ITask>;
   createdAt?: Date;
   updatedAt?: Date;
@@ -19,7 +20,11 @@ export interface IProject extends Document {
 const TaskSchema = new Schema<ITask>(
   {
     title: { type: String, required: true },
-    completed: { type: Boolean, default: false },
+    status: {
+      type: String,
+      enum: ["pending", "in-progress", "done"],
+      default: "pending",
+    },
   },
   { timestamps: true },
 );
@@ -32,6 +37,11 @@ const ProjectSchema = new Schema<IProject>(
       ref: "User",
       required: true,
       index: true,
+    },
+    status: {
+      type: String,
+      enum: ["pending", "in-progress", "done"],
+      default: "pending",
     },
     tasks: [TaskSchema],
   },

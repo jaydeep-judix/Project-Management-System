@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
@@ -33,7 +33,7 @@ export function AuthForm({ className, type, ...props }: AuthFormProps) {
         email: formData.email,
         password: formData.password,
       });
-      router.push("/dashboard"); 
+      router.push("/dashboard");
     } catch (err: any) {
       setError(err.message || "Login failed");
     } finally {
@@ -48,7 +48,7 @@ export function AuthForm({ className, type, ...props }: AuthFormProps) {
         email: formData.email,
         password: formData.password,
       });
-  
+
       router.push("/login");
     } catch (err: any) {
       setError(err.message || "Registration failed");
