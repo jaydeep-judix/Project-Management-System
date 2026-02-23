@@ -15,4 +15,13 @@ export const authService = {
       body: JSON.stringify(data),
     });
   },
+
+  getCurrentUser: async () => {
+    const res = await apiClient("/users/me");
+    return res.data; 
+  },
+
+  logout: async () => {
+    return apiClient("/users/logout", { method: "POST" });
+  },
 };

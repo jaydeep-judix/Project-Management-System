@@ -68,4 +68,19 @@ export class UsersService {
       token,
     };
   }
+  async me(id: string) {
+    const user = await this.repo.findById(id  );
+    if (!user) {
+      throw {
+        code: "NOT_FOUND",
+        message: "User not found",
+        field: null,  
+      };
+    }
+    return {
+      id: user._id.toString(),
+      name: user.name,
+      email: user.email,
+    };
+  }
 }

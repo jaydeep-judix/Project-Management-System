@@ -6,6 +6,10 @@ export class UsersRepository {
     return UserModel.findOne({ email });
   }
 
+  async findById(id: string) {
+    return UserModel.findById(id).select("-password");
+  }
+
   async create(data: RegisterDto & { password: string }) {
     return UserModel.create(data);
   }
