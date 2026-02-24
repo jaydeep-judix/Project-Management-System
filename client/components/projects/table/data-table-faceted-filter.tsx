@@ -2,7 +2,6 @@
 
 import { Check, PlusCircle } from "lucide-react";
 
-
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -21,8 +20,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
-import { DataTableFacetedFilterProps } from "./types/types";
-
+import { DataTableFacetedFilterProps } from "../types/types";
 
 export function DataTableFacetedFilter<TData, TValue>({
   column,

@@ -5,9 +5,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Field, FieldDescription, FieldGroup, FieldLabel } from "../ui/field";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { AuthFormProps } from "../types";
+import { AuthFormProps } from "../../services/types";
 import { authService } from "@/services/auth-service";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export function AuthForm({ className, type, ...props }: AuthFormProps) {
   const isLogin = type === "login";
@@ -33,9 +34,13 @@ export function AuthForm({ className, type, ...props }: AuthFormProps) {
         email: formData.email,
         password: formData.password,
       });
+      toast.success("Welcome back! Loading your dashboard...");
       router.push("/dashboard");
     } catch (err: any) {
-      setError(err.message || "Login failed");
+      const message =
+        err.message || "Login failed. Please check your credentials.";
+      setError(message);
+      toast.error(message);
     } finally {
       setLoading(false);
     }
@@ -49,9 +54,12 @@ export function AuthForm({ className, type, ...props }: AuthFormProps) {
         password: formData.password,
       });
 
+      toast.success("Account created successfully! Please login.");
       router.push("/login");
     } catch (err: any) {
-      setError(err.message || "Registration failed");
+      const message = err.message || "Registration failed. Please try again.";
+      setError(message);
+      toast.error(message);
     } finally {
       setLoading(false);
     }

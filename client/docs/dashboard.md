@@ -1,6 +1,6 @@
 # Dashboard Overview
 
-The Dashboard is the central hub for users to view a summary of their projects and tasks. Recently, it was converted from a static server component to a dynamic client component that fetches data live from the backend API.
+The Dashboard is the central hub for users to view a summary of their projects and tasks. Recently, it was converted from a static server component to a dynamic client component that fetches data live from the backend API. It features premium UX elements like skeleton loaders to eliminate jarring layout shifts during data loading.
 
 ## Core Components
 
@@ -18,7 +18,10 @@ The Dashboard is the central hub for users to view a summary of their projects a
 - **Recent Projects**: (`client/components/dashboard/RecentProjects.tsx`)
   - Displays the 3 most recently created projects using dynamic data.
   - Maps project status to specific UI colors (`done: bg-emerald-500`, etc.) and formats creation dates elegantly.
+  - **Premium Loading**: Uses a `Skeleton` component to provide pulsing placeholders while projects are being fetched.
+  - **UX Enhancement**: Features a dedicated empty state with a "New Project" call-to-action if the user has no projects yet.
 
 - **Sidebar & Navbar**:
-  - The Sidebar contains the main site navigation and a fully functional logout button that calls `authService.logout()`, clearing the httpOnly cookie and forcing a page reload to trigger `middleware.ts` protections.
-  - The Navbar features a `NewProjectDialog` component embedded within the original UI button, allowing users to create new projects without leaving the dashboard context. On success, the dashboard refreshes to show the updated statistics and recent projects list.
+  - The Sidebar contains the main site navigation and a fully functional logout button. It is designed to be fully responsive and scrollable, ensuring all projects and the logout button remain accessible on all screen sizes.
+  - The Navbar features a `NewProjectDialog` component, allowing users to create new projects without leaving the dashboard context.
+  - **Dynamic Context**: Powered by `ProjectContext.tsx`, which automatically re-refreshes data when the user navigates back to the dashboard (via `usePathname`), ensuring metrics are always up to date.

@@ -4,9 +4,9 @@ import { X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { DataTableFacetedFilter } from "@/components/projects/data-table-faceted-filter";
+import { DataTableFacetedFilter } from "@/components/projects/table/data-table-faceted-filter";
 import { statuses } from "./task-columns";
-import { TaskDataTableToolbarProps } from "./types/types";
+import { TaskDataTableToolbarProps } from "../types/types";
 
 export function TaskDataTableToolbar<TData>({
   table,
@@ -43,15 +43,6 @@ export function TaskDataTableToolbar<TData>({
             <X className="ml-2 h-4 w-4" />
           </Button>
         )}
-      </div>
-      <div className="flex items-center gap-2">
-        <Button
-          variant="outline"
-          size="sm"
-          className="h-8 border-zinc-200 gap-2 font-bold text-zinc-600"
-        >
-          View
-        </Button>
       </div>
     </div>
   );

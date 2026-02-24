@@ -1,43 +1,27 @@
 "use client";
 
+import { useMemo } from "react";
+
 import { Sidebar } from "@/components/dashboard/Sidebar";
 import { Navbar } from "@/components/dashboard/Navbar";
-import { DataTable } from "@/components/projects/data-table";
-import { columns } from "@/components/projects/columns";
+import { DataTable } from "@/components/projects/table/data-table";
+import { columns } from "@/components/projects/table/columns";
 import { ProjectTask } from "@/components/projects/types/types";
 import { NewProjectDialog } from "@/components/projects/NewProjectDialog";
 
-import { useEffect, useState, useCallback } from "react";
-import { projectService } from "@/services/project-service";
-import { authService } from "@/services/auth-service";
+import { useProjects } from "@/context/ProjectContext";
 
 export default function ProjectsPage() {
-  const [projects, setProjects] = useState<ProjectTask[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { projects: rawProjects, loading, refreshProjects } = useProjects();
 
-  const fetchProjects = useCallback(async () => {
-    try {
-      const user = await authService.getCurrentUser();
-      const data = await projectService.getProjects(user.id);
-
-      const mappedProjects: ProjectTask[] = data.map((p: any) => ({
-        id: p._id,
-        title: p.name,
-        taskCount: p.tasks?.length || 0,
-        status: p.status || "pending",
-      }));
-
-      setProjects(mappedProjects);
-    } catch (error) {
-      console.error("Failed to fetch projects:", error);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchProjects();
-  }, [fetchProjects]);
+  const projects = useMemo(() => {
+    return rawProjects.map((p: any) => ({
+      id: p._id,
+      title: p.name,
+      taskCount: p.tasks?.length || 0,
+      status: p.status || "pending",
+    })) as ProjectTask[];
+  }, [rawProjects]);
 
   return (
     <div className="flex h-screen bg-zinc-50/50 overflow-hidden">
@@ -57,12 +41,27 @@ export default function ProjectsPage() {
                   Manage and track your projects and their associated tasks.
                 </p>
               </div>
-              <NewProjectDialog onSuccess={fetchProjects} />
+              <NewProjectDialog onSuccess={refreshProjects} />
             </div>
 
             {loading ? (
-              <div className="flex h-[400px] items-center justify-center text-zinc-500 font-medium">
-                Loading projects...
+              <div className="flex h-[400px] items-center justify-center">
+                <div className="flex flex-col items-center gap-4">
+                  <div className="h-8 w-8 animate-spin rounded-full border-4 border-zinc-900 border-t-transparent"></div>
+                  <p className="text-zinc-500 font-medium animate-pulse">
+                    Loading projects...
+                  </p>
+                </div>
+              </div>
+            ) : projects.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-20 px-4 rounded-3xl border-2 border-dashed border-zinc-200 bg-white shadow-sm animate-fade-in">
+                <h3 className="text-xl font-bold text-zinc-900 mb-2">
+                  No projects found
+                </h3>
+                <p className="text-zinc-500 text-center max-w-[400px] mb-8">
+                  Get started by creating your first project to manage your
+                  tasks and track your progress efficiently.
+                </p>
               </div>
             ) : (
               <DataTable columns={columns} data={projects} />

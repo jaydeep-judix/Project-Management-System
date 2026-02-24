@@ -17,6 +17,7 @@ import { Label } from "@/components/ui/label";
 
 import { projectService } from "@/services/project-service";
 import { authService } from "@/services/auth-service";
+import { toast } from "sonner";
 
 export function NewProjectDialog({
   onSuccess,
@@ -37,9 +38,10 @@ export function NewProjectDialog({
       await projectService.createProject(name, user.id);
       setName("");
       setOpen(false);
+      toast.success("Project created successfully!");
       onSuccess?.();
     } catch (error) {
-      console.error("Failed to create project:", error);
+      toast.error("Failed to create project. Please try again.");
     } finally {
       setLoading(false);
     }

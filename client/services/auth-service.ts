@@ -1,5 +1,5 @@
 import { apiClient } from "@/lib/api-client";
-import { LoginDto, RegisterDto } from "@/components/types";
+import { LoginDto, RegisterDto } from "@/services/types";
 
 export const authService = {
   login: async (data: LoginDto) => {
@@ -18,7 +18,7 @@ export const authService = {
 
   getCurrentUser: async () => {
     const res = await apiClient("/users/me");
-    return res.data; 
+    return res.data;
   },
 
   logout: async () => {

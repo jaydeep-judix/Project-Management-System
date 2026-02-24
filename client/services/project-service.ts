@@ -6,6 +6,19 @@ export const projectService = {
     return res.data;
   },
 
+  getProjectById: async (projectId: string) => {
+    const res = await apiClient(`/projects/detail/${projectId}`);
+    return res.data;
+  },
+
+  updateProjectStatus: async (projectId: string, status: string) => {
+    const res = await apiClient(`/projects/${projectId}`, {
+      method: "PATCH",
+      body: JSON.stringify({ status }),
+    });
+    return res.data;
+  },
+
   createProject: async (name: string, userId: string) => {
     const res = await apiClient("/projects", {
       method: "POST",

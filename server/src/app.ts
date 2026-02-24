@@ -10,7 +10,7 @@ import { connectDatabase } from "./config/database";
 import { globalErrorHandler } from "./common/middleware/error.middleware";
 dotenv.config();
 const app = express();
-const FrontendUrl=process.env.FRONTEND_URL;
+const FrontendUrl = process.env.FRONTEND_URL;
 app.use(
   cors({
     origin: [`${FrontendUrl}`],

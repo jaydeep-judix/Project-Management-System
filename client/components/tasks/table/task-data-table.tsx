@@ -26,8 +26,8 @@ import {
 } from "@/components/ui/table";
 
 import { TaskDataTableToolbar } from "./task-data-table-toolbar";
-import { TaskDataTableProps } from "./types/types";
-
+import { DataTablePagination } from "../../projects/table/data-table-pagination";
+import { TaskDataTableProps } from "../types/types";
 
 export function TaskDataTable<TData, TValue>({
   columns,
@@ -123,6 +123,7 @@ export function TaskDataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
+      <DataTablePagination table={table} />
     </div>
   );
 }

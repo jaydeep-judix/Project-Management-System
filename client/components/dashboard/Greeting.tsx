@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { authService } from "@/services/auth-service";
+import { toast } from "sonner";
 
 export default function Greeting() {
   const [userName, setUserName] = useState<string>("");
@@ -13,7 +14,7 @@ export default function Greeting() {
         const user = await authService.getCurrentUser();
         setUserName(user.name);
       } catch (error) {
-        console.error("Failed to fetch user:", error);
+        toast.error("Failed to load user information.");
       } finally {
         setLoading(false);
       }
