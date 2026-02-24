@@ -3,10 +3,13 @@
 import { cn } from "@/lib/utils";
 import { TrendingUp, FolderCheck, Clock, Activity } from "lucide-react";
 
+import { Skeleton } from "../ui/skeleton";
+
 type StatCardProps = {
   title: string;
   value: string | number;
   className?: string;
+  loading?: boolean;
 };
 
 const iconMap: Record<string, any> = {
@@ -15,7 +18,7 @@ const iconMap: Record<string, any> = {
   "Task In-Progress": Clock,
 };
 
-export function StatCard({ title, value, className }: StatCardProps) {
+export function StatCard({ title, value, className, loading }: StatCardProps) {
   const Icon = iconMap[title] || Activity;
 
   return (
@@ -26,20 +29,30 @@ export function StatCard({ title, value, className }: StatCardProps) {
       )}
     >
       <div className="flex items-center justify-between">
-        <div className="rounded-xl bg-zinc-50 p-2 text-zinc-900 group-hover:bg-zinc-100 transition-colors">
-          <Icon size={20} strokeWidth={2.5} />
-        </div>
+        {loading ? (
+          <Skeleton className="h-9 w-9 rounded-xl" />
+        ) : (
+          <div className="rounded-xl bg-zinc-50 p-2 text-zinc-900 group-hover:bg-zinc-100 transition-colors">
+            <Icon size={20} strokeWidth={2.5} />
+          </div>
+        )}
       </div>
 
-      <div className="space-y-0.5">
+      <div className="space-y-2">
         <p className="text-xs font-medium text-zinc-500">{title}</p>
         <div className="flex items-baseline gap-2">
-          <h2 className="text-3xl font-bold tracking-tight text-zinc-900">
-            {value}
-          </h2>
-          <span className="text-[10px] font-semibold text-zinc-400">
-            / this month
-          </span>
+          {loading ? (
+            <Skeleton className="h-8 w-24 rounded-lg" />
+          ) : (
+            <>
+              <h2 className="text-3xl font-bold tracking-tight text-zinc-900">
+                {value}
+              </h2>
+              <span className="text-[10px] font-semibold text-zinc-400">
+                / this month
+              </span>
+            </>
+          )}
         </div>
       </div>
     </div>

@@ -1,5 +1,6 @@
 "use client";
 
+import { cn } from "@/lib/utils";
 import { ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -21,12 +22,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-
+import { ProjectTask } from "../types/types";
 import { projectService } from "@/services/project-service";
-import { Trash2 } from "lucide-react";
-import { ProjectTaskDetail } from "./types/types";
-
-
+import { useProjects } from "@/context/ProjectContext";
+import { toast } from "sonner";
 
 export const statuses = [
   { value: "pending", label: "Pending", icon: CircleDashed },
@@ -34,9 +33,7 @@ export const statuses = [
   { value: "done", label: "Done", icon: CheckCircle2 },
 ];
 
-export const getTaskColumns = (
-  onRefresh: () => void,
-): ColumnDef<ProjectTaskDetail>[] => [
+export const columns: ColumnDef<ProjectTask>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -73,34 +70,24 @@ export const getTaskColumns = (
     enableHiding: false,
   },
   {
-    accessorKey: "taskTitle",
-    header: "Task Title",
+    accessorKey: "title",
+    header: "Project Title",
     cell: ({ row }) => {
       return (
-        <span
-          className="max-w-[400px] truncate font-bold text-zinc-900 block"
-          title={row.getValue("taskTitle")}
-        >
-          {row.getValue("taskTitle")}
+        <span className="max-w-[400px] truncate font-bold text-zinc-900 block">
+          {row.getValue("title")}
         </span>
       );
     },
   },
   {
-    accessorKey: "projectTitle",
-    header: "Project Title",
+    accessorKey: "taskCount",
+    header: "Tasks",
     cell: ({ row }) => {
-      const title = row.getValue("projectTitle") as string;
-      const words = title.split(" ");
-      const truncated =
-        words.slice(0, 4).join(" ") + (words.length > 4 ? " ..." : "");
-
+      const count = row.getValue("taskCount") as number;
       return (
-        <span
-          className="max-w-[300px] truncate text-zinc-500 font-medium block"
-          title={title}
-        >
-          {truncated}
+        <span className="inline-flex items-center rounded-lg bg-zinc-100 px-2.5 py-0.5 text-xs font-bold text-zinc-600">
+          {count} {count === 1 ? "task" : "tasks"}
         </span>
       );
     },
@@ -109,16 +96,22 @@ export const getTaskColumns = (
     accessorKey: "status",
     header: "Status",
     cell: ({ row }) => {
-      const status = statuses.find(
-        (status) => status.value === row.getValue("status"),
-      );
+      const statusValue = row.getValue("status") as string;
+      const status = statuses.find((status) => status.value === statusValue);
 
       if (!status) return null;
 
+      const colorClass =
+        status.value === "done"
+          ? "text-emerald-500"
+          : status.value === "in-progress"
+            ? "text-orange-500"
+            : "text-zinc-400";
+
       return (
         <div className="flex w-[120px] items-center gap-2">
-          <status.icon className="h-4 w-4 text-zinc-400" />
-          <span className="text-sm font-medium text-zinc-600 truncate">
+          <status.icon className={cn("h-4 w-4", colorClass)} />
+          <span className={cn("text-sm font-medium truncate", colorClass)}>
             {status.label}
           </span>
         </div>
@@ -128,28 +121,17 @@ export const getTaskColumns = (
   },
   {
     id: "actions",
-    cell: ({ row }) => {
-      const task = row.original;
+    cell: function ActionsCell({ row }) {
+      const { updateProjectInState } = useProjects();
+      const project = row.original;
 
-      const handleUpdateStatus = async (status: string) => {
+      const handleStatusUpdate = async (newStatus: string) => {
         try {
-          await projectService.updateTaskStatus(
-            task.projectId,
-            task.id,
-            status,
-          );
-          onRefresh();
+          updateProjectInState(project.id, { status: newStatus });
+          await projectService.updateProjectStatus(project.id, newStatus);
+          toast.success("Project status updated!");
         } catch (error) {
-          console.error("Failed to update status:", error);
-        }
-      };
-
-      const handleDeleteTask = async () => {
-        try {
-          await projectService.deleteTask(task.projectId, task.id);
-          onRefresh();
-        } catch (error) {
-          console.error("Failed to delete task:", error);
+          toast.error("Failed to update project status. Please try again.");
         }
       };
 
@@ -175,21 +157,22 @@ export const getTaskColumns = (
               {statuses.map((status) => (
                 <DropdownMenuItem
                   key={status.value}
-                  onSelect={() => handleUpdateStatus(status.value)}
+                  onClick={() => handleStatusUpdate(status.value)}
                   className="rounded-lg text-sm font-medium focus:bg-zinc-50 cursor-pointer flex items-center gap-2"
                 >
-                  <status.icon className="h-4 w-4 text-zinc-400" />
+                  <status.icon
+                    className={cn(
+                      "h-4 w-4",
+                      status.value === "done"
+                        ? "text-emerald-500"
+                        : status.value === "in-progress"
+                          ? "text-orange-500"
+                          : "text-zinc-400",
+                    )}
+                  />
                   {status.label}
                 </DropdownMenuItem>
               ))}
-              <DropdownMenuSeparator className="-mx-1 my-1" />
-              <DropdownMenuItem
-                onSelect={handleDeleteTask}
-                className="rounded-lg text-sm font-medium focus:bg-red-50 text-red-600 cursor-pointer flex items-center gap-2"
-              >
-                <Trash2 className="h-4 w-4" />
-                Delete Task
-              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>

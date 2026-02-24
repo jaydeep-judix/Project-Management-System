@@ -20,6 +20,11 @@ This feature allows users to organize their work by creating projects and managi
   - **Details**: Adds a new task to an existing project.
   - **Validation**: Requires a non-empty task title.
 
+- **PATCH `/projects/:projectId`**
+  - **Payload**: `status`
+  - **Details**: Updates the status of a specific project (e.g., to 'done' or 'in-progress').
+  - **Validation**: Project ID must be valid and status must be one of the allowed enums.
+
 - **PATCH `/projects/:projectId/tasks/:taskId`**
   - **Payload**: `status`
   - **Details**: Updates the status of a specific task.

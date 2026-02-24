@@ -18,6 +18,13 @@ export class ProjectsController {
     return res.status(200).json(successResponse(result));
   };
 
+  getProjectById = async (req: Request, res: Response) => {
+    const result = await this.service.getProjectById(
+      req.params.projectId as string,
+    );
+    return res.status(200).json(successResponse(result));
+  };
+
   addTask = async (req: Request, res: Response) => {
     const result = await this.service.addTask(
       req.params.projectId as string,
@@ -30,6 +37,14 @@ export class ProjectsController {
     const result = await this.service.updateTaskStatus(
       req.params.projectId as string,
       req.params.taskId as string,
+      req.body.status,
+    );
+    return res.status(200).json(successResponse(result));
+  };
+
+  updateProjectStatus = async (req: Request, res: Response) => {
+    const result = await this.service.updateProjectStatus(
+      req.params.projectId as string,
       req.body.status,
     );
     return res.status(200).json(successResponse(result));

@@ -11,6 +11,18 @@ export class ProjectsService {
     return this.repo.findByUser(userId);
   }
 
+  async getProjectById(projectId: string) {
+    const project = await this.repo.findById(projectId);
+    if (!project) {
+      throw {
+        code: "NOT_FOUND",
+        message: "Project not found",
+        field: null,
+      };
+    }
+    return project;
+  }
+
   async addTask(projectId: string, title: string) {
     const project = await this.repo.findById(projectId);
 
@@ -48,6 +60,21 @@ export class ProjectsService {
     }
 
     task.status = status as any;
+    return this.repo.save(project);
+  }
+
+  async updateProjectStatus(projectId: string, status: string) {
+    const project = await this.repo.findById(projectId);
+
+    if (!project) {
+      throw {
+        code: "NOT_FOUND",
+        message: "Project not found",
+        field: null,
+      };
+    }
+
+    project.status = status as any;
     return this.repo.save(project);
   }
 

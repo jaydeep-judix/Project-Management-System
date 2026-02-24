@@ -39,4 +39,7 @@ export type Project = {
   status: "Pending" | "In Progress" | "Completed" | "Started";
   lastUpdated: string;
 };
+export interface DataTablePaginationProps<TData> {
+  table: Table<TData>;
+}
 

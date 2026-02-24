@@ -2,10 +2,15 @@
 
 import { cn } from "@/lib/utils";
 import { RecentProjectsProps } from "./types/types";
+import Link from "next/link";
+import { Skeleton } from "../ui/skeleton";
+import { NewProjectDialog } from "../projects/NewProjectDialog";
+import { Button } from "../ui/button";
+import { Plus } from "lucide-react";
 
 const statusColor: Record<string, string> = {
   done: "bg-emerald-500",
-  "in-progress": "bg-amber-500",
+  "in-progress": "bg-orange-500",
   pending: "bg-zinc-200",
 };
 
@@ -34,9 +39,11 @@ export function RecentProjects({
           </h2>
           <p className="text-sm text-zinc-500">Overview of your latest work</p>
         </div>
-        <button className="text-xs font-bold text-zinc-400 hover:text-zinc-900 underline underline-offset-4 transition-colors">
-          View All
-        </button>
+        <Link href="/projects">
+          <button className="text-xs font-bold text-zinc-400 hover:text-zinc-900 underline cursor-pointer underline-offset-4 transition-colors">
+            View All
+          </button>
+        </Link>
       </div>
 
       <div className="flex flex-col gap-3">
@@ -44,21 +51,31 @@ export function RecentProjects({
           [1, 2, 3].map((i) => (
             <div
               key={i}
-              className="flex items-center justify-between rounded-xl border border-zinc-100 px-5 py-4 animate-pulse"
+              className="flex items-center justify-between rounded-xl border border-zinc-100 px-5 py-4"
             >
               <div className="flex items-center gap-4">
-                <div className="h-2.5 w-2.5 rounded-full bg-zinc-200" />
+                <Skeleton className="h-2.5 w-2.5 rounded-full" />
                 <div className="flex flex-col gap-1.5">
-                  <div className="h-3 w-32 rounded bg-zinc-200" />
-                  <div className="h-2.5 w-16 rounded bg-zinc-100" />
+                  <Skeleton className="h-3 w-32" />
+                  <Skeleton className="h-2.5 w-16" />
                 </div>
               </div>
-              <div className="h-2.5 w-20 rounded bg-zinc-100" />
+              <Skeleton className="h-2.5 w-20" />
             </div>
           ))
         ) : projects.length === 0 ? (
-          <div className="flex h-24 items-center justify-center text-sm text-zinc-400 font-medium">
-            No projects yet. Create your first one!
+          <div className="flex flex-col items-center justify-center p-8 rounded-xl border border-dashed border-zinc-100 bg-zinc-50/30">
+            <p className="text-sm text-zinc-500 font-medium text-center mb-4">
+              No projects yet. Start tracking your latest work!
+            </p>
+            <NewProjectDialog onSuccess={() => window.location.reload()}>
+          <Button className="text-xs font-bold px-4 py-2 bg-white border border-zinc-200 rounded-lg text-zinc-900 hover:bg-zinc-50 transition-colors shadow-sm">
+            <Plus size={18} />
+            <span className="hidden sm:inline text-sm font-semibold tracking-wide">
+              New Project
+            </span>
+          </Button>
+        </NewProjectDialog>
           </div>
         ) : (
           projects.map((project) => (

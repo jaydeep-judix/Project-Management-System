@@ -26,4 +26,4 @@ The system uses a secure cookie-based authentication flow:
 - **`middleware.ts`**: Edge middleware that protects `/dashboard`, `/projects`, `/tasks` by verifying the `token` cookie's presence. Redirects `/` to `/register`.
 - **`lib/api-client.ts`**: Reusable fetch wrapper that ensures cookies are sent/received via `credentials: 'include'`.
 - **`services/auth-service.ts`**: Service layer containing `login`, `register`, `getCurrentUser` (calls `/users/me`), and `logout`.
-- **`components/auth/auth-form.tsx`**: Unified form for Login and Registration. Does not use `localStorage` for session data.
+- **`components/auth/auth-form.tsx`**: Unified form for Login and Registration. Does not use `localStorage` for session data. Uses `sonner` toast notifications to provide immediate, user-friendly feedback on login/registration success or failure.

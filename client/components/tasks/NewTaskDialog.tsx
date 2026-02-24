@@ -24,6 +24,7 @@ import {
 
 import { projectService } from "@/services/project-service";
 import { NewTaskDialogProps } from "./types/types";
+import { toast } from "sonner";
 
 export function NewTaskDialog({ projects, onSuccess }: NewTaskDialogProps) {
   const [open, setOpen] = React.useState(false);
@@ -31,17 +32,31 @@ export function NewTaskDialog({ projects, onSuccess }: NewTaskDialogProps) {
   const [projectId, setProjectId] = React.useState("");
   const [loading, setLoading] = React.useState(false);
 
+  React.useEffect(() => {
+    if (projects.length === 1 && !projectId) {
+      setProjectId(projects[0].id);
+    }
+  }, [projects, projectId]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!projectId) {
+      toast.error("Please select a project first.");
+      return;
+    }
     setLoading(true);
     try {
       await projectService.addTask(projectId, title);
       setTitle("");
-      setProjectId("");
+      
+      if (projects.length > 1) {
+        setProjectId("");
+      }
       setOpen(false);
+      toast.success("Task added successfully!");
       onSuccess?.();
     } catch (error) {
-      console.error("Failed to add task:", error);
+      toast.error("Failed to add task. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -82,33 +97,35 @@ export function NewTaskDialog({ projects, onSuccess }: NewTaskDialogProps) {
                 required
               />
             </div>
-            <div className="space-y-2">
-              <Label
-                htmlFor="project"
-                className="text-sm font-bold text-zinc-700"
-              >
-                Project
-              </Label>
-              <Select value={projectId} onValueChange={setProjectId} required>
-                <SelectTrigger
-                  id="project"
-                  className="h-11 rounded-xl border-zinc-200 bg-zinc-50/50 focus:bg-white transition-colors"
+            {projects.length > 1 && (
+              <div className="space-y-2">
+                <Label
+                  htmlFor="project"
+                  className="text-sm font-bold text-zinc-700"
                 >
-                  <SelectValue placeholder="Select a project" />
-                </SelectTrigger>
-                <SelectContent className="rounded-xl border-zinc-200 shadow-lg">
-                  {projects.map((project) => (
-                    <SelectItem
-                      key={project.id}
-                      value={project.id}
-                      className="rounded-lg focus:bg-zinc-50"
-                    >
-                      {project.title}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+                  Project
+                </Label>
+                <Select value={projectId} onValueChange={setProjectId} required>
+                  <SelectTrigger
+                    id="project"
+                    className="h-11 rounded-xl border-zinc-200 bg-zinc-50/50 focus:bg-white transition-colors"
+                  >
+                    <SelectValue placeholder="Select a project" />
+                  </SelectTrigger>
+                  <SelectContent className="rounded-xl border-zinc-200 shadow-lg">
+                    {projects.map((project) => (
+                      <SelectItem
+                        key={project.id}
+                        value={project.id}
+                        className="rounded-lg focus:bg-zinc-50"
+                      >
+                        {project.title}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
           </div>
           <DialogFooter>
             <Button
